@@ -5,15 +5,15 @@ import ollama
 from faster_whisper import WhisperModel
 
 # Load STT model once (slow to load, fast to reuse)
-print("Loading whisper model stay patient, nigga👍...")
+print("Loading whisper model stay patient, 👍...")
 stt_model = WhisperModel("base", device="cpu", compute_type="int8")
 
 def record_audio(filename="input.wav", duration=5, samplerate=16000):
-    print(f"Recording for {duration} seconds... speak now niggaaa.")
+    print(f"Recording for {duration} seconds... speak now .")
     audio = sd.rec(int(duration * samplerate), samplerate=samplerate, channels=1)
     sd.wait()
     sf.write(filename, audio, samplerate)
-    print("Recording saved.")
+    print("Recording saved succesfully.")
 
 def transcribe(filename="input.wav"):
     segments, _ = stt_model.transcribe(filename)
