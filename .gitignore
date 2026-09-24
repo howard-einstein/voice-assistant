@@ -3,3 +3,6 @@
 __pycache__/
 *.wav
 .cache/
+en_US-lessac-medium.onnx
+test.txt
+en_US-lessac-medium.onnx.json
