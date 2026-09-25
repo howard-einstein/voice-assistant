@@ -1,25 +1,31 @@
 import sounddevice as sd
 import numpy as np
+from scipy import signal
 from openwakeword.model import Model
 from mic_utils import select_mic
 
 select_mic()
 
-# Load the pretrained "hey jarvis" model
 oww_model = Model(wakeword_models=["hey_jarvis"])
 
-samplerate = 16000
-chunk_size = 1280  # openWakeWord expects 80ms chunks at 16kHz
+native_samplerate = 48000
+target_samplerate = 16000
+chunk_size = int(native_samplerate * 0.08)  # 80ms of audio at native rate
 
 print("Listening for 'hey jarvis'... (Ctrl+C to stop)")
 
 def callback(indata, frames, time, status):
     audio = np.frombuffer(indata, dtype=np.int16)
-    prediction = oww_model.predict(audio)
+
+    # Downsample from 48000 -> 16000
+    num_samples = int(len(audio) * target_samplerate / native_samplerate)
+    audio_resampled = signal.resample(audio, num_samples).astype(np.int16)
+
+    prediction = oww_model.predict(audio_resampled)
     for wakeword, score in prediction.items():
         if score > 0.5:
             print(f"Wake word detected: {wakeword} (score: {score:.2f})")
 
-with sd.InputStream(samplerate=samplerate, blocksize=chunk_size, dtype='int16', channels=1, callback=callback):
+with sd.InputStream(samplerate=native_samplerate, blocksize=chunk_size, dtype='int16', channels=1, callback=callback):
     while True:
         sd.sleep(100)
