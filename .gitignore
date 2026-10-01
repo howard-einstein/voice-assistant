@@ -5,4 +5,4 @@ __pycache__/
 .cache/
 en_US-lessac-medium.onnx
 test.txt
-en_US-lessac-medium.onnx.json
+en_US-lessac-medium.onnx.jsonvenv/
